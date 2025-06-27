@@ -59,16 +59,28 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
     { name: 'Dream', filters: { brightness: 120, contrast: 90, saturation: 70, blur: 2, grayscale: 0, sepia: 10 } }
   ];
 
+  // Generate final image whenever filters or frame changes
   useEffect(() => {
-    if (imageRef.current) {
-      imageRef.current.onload = () => {
-        applyFilters();
-      };
+    if (imageRef.current && imageRef.current.complete) {
+      generateFinalImage();
     }
   }, [filters, selectedFrame]);
 
-  const applyFilters = () => {
-    if (!canvasRef.current || !imageRef.current) return;
+  // Load image and generate final image
+  useEffect(() => {
+    if (imageRef.current) {
+      if (imageRef.current.complete) {
+        generateFinalImage();
+      } else {
+        imageRef.current.onload = () => {
+          generateFinalImage();
+        };
+      }
+    }
+  }, [photoUrl]);
+
+  const generateFinalImage = () => {
+    if (!canvasRef.current || !imageRef.current || !imageRef.current.complete) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -76,10 +88,14 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
 
     if (!ctx) return;
 
+    // Set canvas size to match image
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
 
-    // Apply filters
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Apply filters to context
     ctx.filter = `
       brightness(${filters.brightness}%)
       contrast(${filters.contrast}%)
@@ -89,15 +105,22 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
       sepia(${filters.sepia}%)
     `;
 
+    // Draw the image with filters
     ctx.drawImage(img, 0, 0);
 
-    // Apply frame
+    // Reset filter for frame drawing
+    ctx.filter = 'none';
+
+    // Apply frame if selected
     if (selectedFrame > 0) {
       applyFrame(ctx, canvas.width, canvas.height);
     }
 
-    // Convert to data URL for sharing
-    setFinalImageUrl(canvas.toDataURL('image/jpeg', 0.9));
+    // Convert canvas to data URL for sharing/downloading
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    setFinalImageUrl(dataUrl);
+    
+    console.log('Final image generated:', dataUrl.substring(0, 50) + '...');
   };
 
   const applyFrame = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
@@ -199,12 +222,19 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
   };
 
   const downloadImage = () => {
-    if (!finalImageUrl) return;
+    if (!finalImageUrl) {
+      console.error('No final image URL available for download');
+      return;
+    }
 
     const link = document.createElement('a');
     link.download = `photobooth-${Date.now()}.jpg`;
     link.href = finalImageUrl;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
+    
+    console.log('Download initiated with final image');
   };
 
   return (
@@ -247,12 +277,16 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
         {/* Photo Preview */}
         <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden mb-4">
           <div className="relative aspect-[9/16] bg-gray-100">
+            {/* Hidden image for processing */}
             <img
               ref={imageRef}
               src={photoUrl}
               alt="Original"
               className="hidden"
+              crossOrigin="anonymous"
             />
+            
+            {/* Visual preview */}
             <div 
               className="w-full h-full bg-cover bg-center relative"
               style={{
@@ -488,6 +522,7 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
         </div>
       </div>
 
+      {/* Hidden canvas for processing */}
       <canvas ref={canvasRef} className="hidden" />
       
       {showShareModal && (

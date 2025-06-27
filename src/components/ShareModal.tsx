@@ -12,39 +12,65 @@ interface ShareModalProps {
 
 const ShareModal = ({ imageUrl, onClose }: ShareModalProps) => {
   const downloadImage = () => {
+    if (!imageUrl) {
+      toast({
+        title: "Error",
+        description: "Tidak ada gambar untuk diunduh",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const link = document.createElement('a');
-    link.download = `photobooth-${Date.now()}.jpg`;
+    link.download = `photobooth-edited-${Date.now()}.jpg`;
     link.href = imageUrl;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
     
     toast({
       title: "Foto berhasil diunduh!",
-      description: "Foto telah disimpan ke perangkat Anda",
+      description: "Foto yang sudah diedit telah disimpan ke perangkat Anda",
     });
   };
 
-  const shareToWhatsApp = () => {
-    // Convert image to blob and create object URL for sharing
-    fetch(imageUrl)
-      .then(res => res.blob())
-      .then(blob => {
-        if (navigator.share) {
-          navigator.share({
-            title: 'Foto Photobooth Saya',
-            text: 'Lihat foto keren yang baru saja saya buat!',
-            files: [new File([blob], 'photobooth.jpg', { type: 'image/jpeg' })]
-          }).catch(console.error);
-        } else {
-          // Fallback: open WhatsApp web with text
-          const text = encodeURIComponent('Lihat foto keren yang baru saja saya buat di Photobooth!');
-          window.open(`https://wa.me/?text=${text}`, '_blank');
-        }
+  const shareToWhatsApp = async () => {
+    if (!imageUrl) {
+      toast({
+        title: "Error",
+        description: "Tidak ada gambar untuk dibagikan",
+        variant: "destructive"
       });
+      return;
+    }
+
+    try {
+      // Convert data URL to blob
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      
+      if (navigator.share && navigator.canShare?.({ files: [new File([blob], 'photobooth.jpg', { type: 'image/jpeg' })] })) {
+        await navigator.share({
+          title: 'Foto Photobooth Saya',
+          text: 'Lihat foto keren yang baru saja saya edit!',
+          files: [new File([blob], 'photobooth-edited.jpg', { type: 'image/jpeg' })]
+        });
+      } else {
+        // Fallback: open WhatsApp web with text
+        const text = encodeURIComponent('Lihat foto keren yang baru saja saya edit di Photobooth!');
+        window.open(`https://wa.me/?text=${text}`, '_blank');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      // Fallback: open WhatsApp web with text
+      const text = encodeURIComponent('Lihat foto keren yang baru saya edit di Photobooth!');
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
   };
 
   const shareToFacebook = () => {
     const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent('Lihat foto keren yang baru saja saya buat di Photobooth!');
+    const text = encodeURIComponent('Lihat foto keren yang baru saja saya edit di Photobooth!');
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
   };
 
@@ -86,11 +112,17 @@ const ShareModal = ({ imageUrl, onClose }: ShareModalProps) => {
           {/* Preview */}
           <div className="p-6">
             <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-6">
-              <img 
-                src={imageUrl} 
-                alt="Preview" 
-                className="w-full h-full object-cover"
-              />
+              {imageUrl ? (
+                <img 
+                  src={imageUrl} 
+                  alt="Edited Preview" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-500">
+                  Loading preview...
+                </div>
+              )}
             </div>
 
             {/* Share Options */}
