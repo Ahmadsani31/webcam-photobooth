@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -148,225 +147,224 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-cyan-100 p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-cyan-100 p-2 sm:p-4">
+      <div className="max-w-md mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <Button
             onClick={onBack}
             variant="outline"
-            className="rounded-2xl border-2 hover:bg-white/80"
+            size="sm"
+            className="rounded-xl border-2 hover:bg-white/80"
           >
-            <ArrowLeft className="w-5 h-5 mr-2" />
+            <ArrowLeft className="w-4 h-4 mr-1" />
             Kembali
           </Button>
           
-          <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent">
+          <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent">
             Edit Foto
           </h2>
           
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button
               onClick={downloadImage}
-              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-2xl"
+              size="sm"
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl p-2"
             >
-              <Download className="w-5 h-5 mr-2" />
-              Download
+              <Download className="w-4 h-4" />
             </Button>
             <Button
               onClick={() => setShowShareModal(true)}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-2xl"
+              size="sm"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl p-2"
             >
-              <Share className="w-5 h-5 mr-2" />
-              Bagikan
+              <Share className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Photo Preview */}
-          <div className="lg:col-span-2">
-            <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden">
-              <div className="relative aspect-[4/3] bg-gray-100">
-                <img
-                  ref={imageRef}
-                  src={photoUrl}
-                  alt="Original"
-                  className="hidden"
-                />
+        {/* Photo Preview */}
+        <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden mb-4">
+          <div className="relative aspect-[9/16] bg-gray-100">
+            <img
+              ref={imageRef}
+              src={photoUrl}
+              alt="Original"
+              className="hidden"
+            />
+            <div 
+              className="w-full h-full bg-cover bg-center relative"
+              style={{
+                backgroundImage: `url(${photoUrl})`,
+                filter: `
+                  brightness(${filters.brightness}%)
+                  contrast(${filters.contrast}%)
+                  saturate(${filters.saturation}%)
+                  blur(${filters.blur}px)
+                  grayscale(${filters.grayscale}%)
+                  sepia(${filters.sepia}%)
+                `
+              }}
+            >
+              {/* Frame overlays */}
+              {selectedFrame === 1 && (
+                <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-white"></div>
+              )}
+              {selectedFrame === 2 && (
                 <div 
-                  className="w-full h-full bg-cover bg-center relative"
+                  className="absolute inset-0 opacity-30"
                   style={{
-                    backgroundImage: `url(${photoUrl})`,
-                    filter: `
-                      brightness(${filters.brightness}%)
-                      contrast(${filters.contrast}%)
-                      saturate(${filters.saturation}%)
-                      blur(${filters.blur}px)
-                      grayscale(${filters.grayscale}%)
-                      sepia(${filters.sepia}%)
-                    `
+                    background: 'radial-gradient(circle, transparent 0%, transparent 80%, rgba(139,69,19,0.3) 100%)'
                   }}
+                ></div>
+              )}
+              {selectedFrame === 3 && (
+                <>
+                  <div 
+                    className="absolute top-0 left-0 right-0 h-4 opacity-20"
+                    style={{
+                      background: 'linear-gradient(90deg, #ff0096, #ff6400, #ffff00, #00ff64, #0096ff, #9600ff)'
+                    }}
+                  ></div>
+                  <div 
+                    className="absolute bottom-0 left-0 right-0 h-4 opacity-20"
+                    style={{
+                      background: 'linear-gradient(90deg, #ff0096, #ff6400, #ffff00, #00ff64, #0096ff, #9600ff)'
+                    }}
+                  ></div>
+                </>
+              )}
+            </div>
+          </div>
+        </Card>
+
+        {/* Controls */}
+        <div className="space-y-4">
+          {/* Filter Presets */}
+          <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-4">
+            <h3 className="text-lg font-bold text-gray-800 mb-3">Filter Preset</h3>
+            <div className="grid grid-cols-3 gap-2">
+              {filterPresets.map((preset) => (
+                <Button
+                  key={preset.name}
+                  onClick={() => applyPreset(preset)}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 text-xs"
                 >
-                  {/* Frame overlays */}
-                  {selectedFrame === 1 && (
-                    <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-white"></div>
-                  )}
-                  {selectedFrame === 2 && (
-                    <div 
-                      className="absolute inset-0 opacity-30"
-                      style={{
-                        background: 'radial-gradient(circle, transparent 0%, transparent 80%, rgba(139,69,19,0.3) 100%)'
-                      }}
-                    ></div>
-                  )}
-                  {selectedFrame === 3 && (
-                    <>
-                      <div 
-                        className="absolute top-0 left-0 right-0 h-5 opacity-20"
-                        style={{
-                          background: 'linear-gradient(90deg, #ff0096, #ff6400, #ffff00, #00ff64, #0096ff, #9600ff)'
-                        }}
-                      ></div>
-                      <div 
-                        className="absolute bottom-0 left-0 right-0 h-5 opacity-20"
-                        style={{
-                          background: 'linear-gradient(90deg, #ff0096, #ff6400, #ffff00, #00ff64, #0096ff, #9600ff)'
-                        }}
-                      ></div>
-                    </>
-                  )}
-                </div>
+                  {preset.name}
+                </Button>
+              ))}
+            </div>
+          </Card>
+
+          {/* Frame Selection */}
+          <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-4">
+            <h3 className="text-lg font-bold text-gray-800 mb-3">Pilih Frame</h3>
+            <div className="grid grid-cols-2 gap-2">
+              {frames.map((frame) => (
+                <Button
+                  key={frame.id}
+                  onClick={() => setSelectedFrame(frame.id)}
+                  variant={selectedFrame === frame.id ? "default" : "outline"}
+                  size="sm"
+                  className="rounded-xl text-xs"
+                >
+                  {frame.name}
+                </Button>
+              ))}
+            </div>
+          </Card>
+
+          {/* Manual Filters */}
+          <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-4">
+            <h3 className="text-lg font-bold text-gray-800 mb-3">Atur Manual</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-gray-700 mb-1 block">
+                  Kecerahan: {filters.brightness}%
+                </label>
+                <Slider
+                  value={[filters.brightness]}
+                  onValueChange={(value) => handleFilterChange('brightness', value)}
+                  min={50}
+                  max={200}
+                  step={1}
+                  className="w-full"
+                />
               </div>
-            </Card>
-          </div>
 
-          {/* Controls */}
-          <div className="space-y-6">
-            {/* Filter Presets */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Filter Preset</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {filterPresets.map((preset) => (
-                  <Button
-                    key={preset.name}
-                    onClick={() => applyPreset(preset)}
-                    variant="outline"
-                    className="rounded-xl hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50"
-                  >
-                    {preset.name}
-                  </Button>
-                ))}
+              <div>
+                <label className="text-xs font-medium text-gray-700 mb-1 block">
+                  Kontras: {filters.contrast}%
+                </label>
+                <Slider
+                  value={[filters.contrast]}
+                  onValueChange={(value) => handleFilterChange('contrast', value)}
+                  min={50}
+                  max={200}
+                  step={1}
+                  className="w-full"
+                />
               </div>
-            </Card>
 
-            {/* Frame Selection */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Pilih Frame</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {frames.map((frame) => (
-                  <Button
-                    key={frame.id}
-                    onClick={() => setSelectedFrame(frame.id)}
-                    variant={selectedFrame === frame.id ? "default" : "outline"}
-                    className="rounded-xl"
-                  >
-                    {frame.name}
-                  </Button>
-                ))}
+              <div>
+                <label className="text-xs font-medium text-gray-700 mb-1 block">
+                  Saturasi: {filters.saturation}%
+                </label>
+                <Slider
+                  value={[filters.saturation]}
+                  onValueChange={(value) => handleFilterChange('saturation', value)}
+                  min={0}
+                  max={200}
+                  step={1}
+                  className="w-full"
+                />
               </div>
-            </Card>
 
-            {/* Manual Filters */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Atur Manual</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Kecerahan: {filters.brightness}%
-                  </label>
-                  <Slider
-                    value={[filters.brightness]}
-                    onValueChange={(value) => handleFilterChange('brightness', value)}
-                    min={50}
-                    max={200}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Kontras: {filters.contrast}%
-                  </label>
-                  <Slider
-                    value={[filters.contrast]}
-                    onValueChange={(value) => handleFilterChange('contrast', value)}
-                    min={50}
-                    max={200}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Saturasi: {filters.saturation}%
-                  </label>
-                  <Slider
-                    value={[filters.saturation]}
-                    onValueChange={(value) => handleFilterChange('saturation', value)}
-                    min={0}
-                    max={200}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Blur: {filters.blur}px
-                  </label>
-                  <Slider
-                    value={[filters.blur]}
-                    onValueChange={(value) => handleFilterChange('blur', value)}
-                    min={0}
-                    max={10}
-                    step={0.5}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Grayscale: {filters.grayscale}%
-                  </label>
-                  <Slider
-                    value={[filters.grayscale]}
-                    onValueChange={(value) => handleFilterChange('grayscale', value)}
-                    min={0}
-                    max={100}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Sepia: {filters.sepia}%
-                  </label>
-                  <Slider
-                    value={[filters.sepia]}
-                    onValueChange={(value) => handleFilterChange('sepia', value)}
-                    min={0}
-                    max={100}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
+              <div>
+                <label className="text-xs font-medium text-gray-700 mb-1 block">
+                  Blur: {filters.blur}px
+                </label>
+                <Slider
+                  value={[filters.blur]}
+                  onValueChange={(value) => handleFilterChange('blur', value)}
+                  min={0}
+                  max={10}
+                  step={0.5}
+                  className="w-full"
+                />
               </div>
-            </Card>
-          </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-700 mb-1 block">
+                  Grayscale: {filters.grayscale}%
+                </label>
+                <Slider
+                  value={[filters.grayscale]}
+                  onValueChange={(value) => handleFilterChange('grayscale', value)}
+                  min={0}
+                  max={100}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-700 mb-1 block">
+                  Sepia: {filters.sepia}%
+                </label>
+                <Slider
+                  value={[filters.sepia]}
+                  onValueChange={(value) => handleFilterChange('sepia', value)}
+                  min={0}
+                  max={100}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
 
