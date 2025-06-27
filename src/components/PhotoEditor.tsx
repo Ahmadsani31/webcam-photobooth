@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -40,7 +41,10 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
     { id: 0, name: 'Tanpa Frame', style: '' },
     { id: 1, name: 'Polaroid', style: 'polaroid' },
     { id: 2, name: 'Vintage', style: 'vintage' },
-    { id: 3, name: 'Rainbow', style: 'rainbow' }
+    { id: 3, name: 'Rainbow', style: 'rainbow' },
+    { id: 4, name: 'Neon', style: 'neon' },
+    { id: 5, name: 'Gold', style: 'gold' },
+    { id: 6, name: 'Hearts', style: 'hearts' }
   ];
 
   const filterPresets = [
@@ -48,7 +52,11 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
     { name: 'Vintage', filters: { brightness: 110, contrast: 120, saturation: 80, blur: 0, grayscale: 0, sepia: 30 } },
     { name: 'B&W', filters: { brightness: 105, contrast: 115, saturation: 100, blur: 0, grayscale: 100, sepia: 0 } },
     { name: 'Bright', filters: { brightness: 130, contrast: 110, saturation: 120, blur: 0, grayscale: 0, sepia: 0 } },
-    { name: 'Soft', filters: { brightness: 105, contrast: 95, saturation: 90, blur: 1, grayscale: 0, sepia: 0 } }
+    { name: 'Soft', filters: { brightness: 105, contrast: 95, saturation: 90, blur: 1, grayscale: 0, sepia: 0 } },
+    { name: 'Cool', filters: { brightness: 95, contrast: 110, saturation: 80, blur: 0, grayscale: 20, sepia: 0 } },
+    { name: 'Warm', filters: { brightness: 115, contrast: 105, saturation: 110, blur: 0, grayscale: 0, sepia: 15 } },
+    { name: 'Drama', filters: { brightness: 85, contrast: 140, saturation: 130, blur: 0, grayscale: 0, sepia: 0 } },
+    { name: 'Dream', filters: { brightness: 120, contrast: 90, saturation: 70, blur: 2, grayscale: 0, sepia: 10 } }
   ];
 
   useEffect(() => {
@@ -99,31 +107,84 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
       case 1: // Polaroid
         ctx.fillStyle = 'white';
         ctx.fillRect(0, height - height * 0.15, width, height * 0.15);
+        ctx.fillStyle = '#333';
+        ctx.font = `${width * 0.03}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText('Photobooth', width / 2, height - height * 0.05);
         break;
       case 2: // Vintage
         const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width, height)/2);
         gradient.addColorStop(0, 'rgba(255,255,255,0)');
-        gradient.addColorStop(0.8, 'rgba(139,69,19,0.1)');
-        gradient.addColorStop(1, 'rgba(139,69,19,0.3)');
+        gradient.addColorStop(0.7, 'rgba(139,69,19,0.1)');
+        gradient.addColorStop(1, 'rgba(139,69,19,0.4)');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
         break;
       case 3: // Rainbow
         const rainbowGradient = ctx.createLinearGradient(0, 0, width, 0);
-        rainbowGradient.addColorStop(0, 'rgba(255,0,150,0.2)');
-        rainbowGradient.addColorStop(0.2, 'rgba(255,100,0,0.2)');
-        rainbowGradient.addColorStop(0.4, 'rgba(255,255,0,0.2)');
-        rainbowGradient.addColorStop(0.6, 'rgba(0,255,100,0.2)');
-        rainbowGradient.addColorStop(0.8, 'rgba(0,150,255,0.2)');
-        rainbowGradient.addColorStop(1, 'rgba(150,0,255,0.2)');
+        rainbowGradient.addColorStop(0, 'rgba(255,0,150,0.3)');
+        rainbowGradient.addColorStop(0.2, 'rgba(255,100,0,0.3)');
+        rainbowGradient.addColorStop(0.4, 'rgba(255,255,0,0.3)');
+        rainbowGradient.addColorStop(0.6, 'rgba(0,255,100,0.3)');
+        rainbowGradient.addColorStop(0.8, 'rgba(0,150,255,0.3)');
+        rainbowGradient.addColorStop(1, 'rgba(150,0,255,0.3)');
         
-        // Top border
+        const borderSize = Math.max(width, height) * 0.02;
         ctx.fillStyle = rainbowGradient;
-        ctx.fillRect(0, 0, width, 20);
-        // Bottom border
-        ctx.fillRect(0, height - 20, width, 20);
+        ctx.fillRect(0, 0, width, borderSize);
+        ctx.fillRect(0, height - borderSize, width, borderSize);
+        ctx.fillRect(0, 0, borderSize, height);
+        ctx.fillRect(width - borderSize, 0, borderSize, height);
+        break;
+      case 4: // Neon
+        ctx.shadowColor = '#00ffff';
+        ctx.shadowBlur = 20;
+        ctx.strokeStyle = '#00ffff';
+        ctx.lineWidth = 8;
+        ctx.strokeRect(20, 20, width - 40, height - 40);
+        
+        ctx.shadowColor = '#ff00ff';
+        ctx.strokeStyle = '#ff00ff';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(30, 30, width - 60, height - 60);
+        ctx.shadowBlur = 0;
+        break;
+      case 5: // Gold
+        const goldGradient = ctx.createLinearGradient(0, 0, width, height);
+        goldGradient.addColorStop(0, 'rgba(255,215,0,0.7)');
+        goldGradient.addColorStop(0.5, 'rgba(255,223,0,0.3)');
+        goldGradient.addColorStop(1, 'rgba(255,215,0,0.7)');
+        
+        const frameWidth = Math.max(width, height) * 0.03;
+        ctx.fillStyle = goldGradient;
+        ctx.fillRect(0, 0, width, frameWidth);
+        ctx.fillRect(0, height - frameWidth, width, frameWidth);
+        ctx.fillRect(0, 0, frameWidth, height);
+        ctx.fillRect(width - frameWidth, 0, frameWidth, height);
+        break;
+      case 6: // Hearts
+        ctx.fillStyle = 'rgba(255,20,147,0.6)';
+        const heartSize = Math.min(width, height) * 0.05;
+        
+        // Draw hearts in corners
+        drawHeart(ctx, heartSize, heartSize, heartSize);
+        drawHeart(ctx, width - heartSize * 2, heartSize, heartSize);
+        drawHeart(ctx, heartSize, height - heartSize * 2, heartSize);
+        drawHeart(ctx, width - heartSize * 2, height - heartSize * 2, heartSize);
         break;
     }
+  };
+
+  const drawHeart = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number) => {
+    ctx.beginPath();
+    const topCurveHeight = size * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + topCurveHeight);
+    ctx.bezierCurveTo(x - size / 2, y + (topCurveHeight + size) / 2, x, y + (topCurveHeight + size) / 2, x, y + size);
+    ctx.bezierCurveTo(x, y + (topCurveHeight + size) / 2, x + size / 2, y + (topCurveHeight + size) / 2, x + size / 2, y + topCurveHeight);
+    ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + topCurveHeight);
+    ctx.closePath();
+    ctx.fill();
   };
 
   const handleFilterChange = (filterName: keyof Filters, value: number[]) => {
@@ -206,33 +267,92 @@ const PhotoEditor = ({ photoUrl, onBack, onHome }: PhotoEditorProps) => {
                 `
               }}
             >
-              {/* Frame overlays */}
+              {/* Frame overlays with proper positioning */}
               {selectedFrame === 1 && (
-                <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-white"></div>
+                <div className="absolute inset-0">
+                  <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-white"></div>
+                  <div className="absolute bottom-[2%] left-0 right-0 text-center">
+                    <span className="text-gray-800 text-xs font-medium">Photobooth</span>
+                  </div>
+                </div>
               )}
               {selectedFrame === 2 && (
                 <div 
-                  className="absolute inset-0 opacity-30"
+                  className="absolute inset-0"
                   style={{
-                    background: 'radial-gradient(circle, transparent 0%, transparent 80%, rgba(139,69,19,0.3) 100%)'
+                    background: 'radial-gradient(circle, transparent 0%, transparent 70%, rgba(139,69,19,0.1) 70%, rgba(139,69,19,0.4) 100%)'
                   }}
                 ></div>
               )}
               {selectedFrame === 3 && (
-                <>
+                <div className="absolute inset-0">
                   <div 
-                    className="absolute top-0 left-0 right-0 h-4 opacity-20"
+                    className="absolute top-0 left-0 right-0 h-2"
                     style={{
-                      background: 'linear-gradient(90deg, #ff0096, #ff6400, #ffff00, #00ff64, #0096ff, #9600ff)'
+                      background: 'linear-gradient(90deg, rgba(255,0,150,0.3), rgba(255,100,0,0.3), rgba(255,255,0,0.3), rgba(0,255,100,0.3), rgba(0,150,255,0.3), rgba(150,0,255,0.3))'
                     }}
                   ></div>
                   <div 
-                    className="absolute bottom-0 left-0 right-0 h-4 opacity-20"
+                    className="absolute bottom-0 left-0 right-0 h-2"
                     style={{
-                      background: 'linear-gradient(90deg, #ff0096, #ff6400, #ffff00, #00ff64, #0096ff, #9600ff)'
+                      background: 'linear-gradient(90deg, rgba(255,0,150,0.3), rgba(255,100,0,0.3), rgba(255,255,0,0.3), rgba(0,255,100,0.3), rgba(0,150,255,0.3), rgba(150,0,255,0.3))'
                     }}
                   ></div>
-                </>
+                  <div 
+                    className="absolute top-0 bottom-0 left-0 w-2"
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(255,0,150,0.3), rgba(255,100,0,0.3), rgba(255,255,0,0.3), rgba(0,255,100,0.3), rgba(0,150,255,0.3), rgba(150,0,255,0.3))'
+                    }}
+                  ></div>
+                  <div 
+                    className="absolute top-0 bottom-0 right-0 w-2"
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(255,0,150,0.3), rgba(255,100,0,0.3), rgba(255,255,0,0.3), rgba(0,255,100,0.3), rgba(0,150,255,0.3), rgba(150,0,255,0.3))'
+                    }}
+                  ></div>
+                </div>
+              )}
+              {selectedFrame === 4 && (
+                <div className="absolute inset-0">
+                  <div className="absolute inset-2 border-4 border-cyan-400 shadow-lg shadow-cyan-400/50 rounded-lg"></div>
+                  <div className="absolute inset-3 border-2 border-pink-400 shadow-md shadow-pink-400/50 rounded-lg"></div>
+                </div>
+              )}
+              {selectedFrame === 5 && (
+                <div className="absolute inset-0">
+                  <div 
+                    className="absolute top-0 left-0 right-0 h-3"
+                    style={{
+                      background: 'linear-gradient(45deg, rgba(255,215,0,0.7), rgba(255,223,0,0.3), rgba(255,215,0,0.7))'
+                    }}
+                  ></div>
+                  <div 
+                    className="absolute bottom-0 left-0 right-0 h-3"
+                    style={{
+                      background: 'linear-gradient(45deg, rgba(255,215,0,0.7), rgba(255,223,0,0.3), rgba(255,215,0,0.7))'
+                    }}
+                  ></div>
+                  <div 
+                    className="absolute top-0 bottom-0 left-0 w-3"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255,215,0,0.7), rgba(255,223,0,0.3), rgba(255,215,0,0.7))'
+                    }}
+                  ></div>
+                  <div 
+                    className="absolute top-0 bottom-0 right-0 w-3"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255,215,0,0.7), rgba(255,223,0,0.3), rgba(255,215,0,0.7))'
+                    }}
+                  ></div>
+                </div>
+              )}
+              {selectedFrame === 6 && (
+                <div className="absolute inset-0">
+                  <div className="absolute top-2 left-2 text-pink-500 text-lg">💖</div>
+                  <div className="absolute top-2 right-2 text-pink-500 text-lg">💖</div>
+                  <div className="absolute bottom-2 left-2 text-pink-500 text-lg">💖</div>
+                  <div className="absolute bottom-2 right-2 text-pink-500 text-lg">💖</div>
+                </div>
               )}
             </div>
           </div>
