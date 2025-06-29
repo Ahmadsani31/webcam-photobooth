@@ -1,73 +1,59 @@
-# Welcome to your Lovable project
+# 📸 Web Photobooth – Capture, Edit, dan Bagikan Momenmu!
 
-## Project info
+![photobooth-preview](/public/images/preview/preview-1.png)
+![photobooth-preview](/public/images/preview/preview-2.png)
+![photobooth-preview](/public/images/preview/preview-3.png)
 
-**URL**: https://lovable.dev/projects/fc5e00ee-481f-4538-b0c4-8cd6d4d83e90
+Web Photobooth adalah aplikasi berbasis web yang memungkinkan pengguna mengambil foto langsung dari kamera atau galeri, menambahkan dekorasi seperti efek dan bingkai, lalu menyimpan atau membagikannya ke media sosial. Dibuat dengan teknologi web modern dan tampilan yang colorful serta responsif.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Fitur Utama
 
-**Use Lovable**
+- 📷 **Ambil Foto Langsung** dari kamera (HTML5 Camera)
+- 🖼️ **Unggah Foto dari Galeri**
+- 🎨 **Tambahkan Filter & Efek** (grayscale, sepia, brightness, dll)
+- 💠 **Tambahkan Bingkai Unik** (beberapa pilihan frame)
+- 📥 **Download Foto** hasil edit
+- 🔗 **Bagikan ke Media Sosial** (WhatsApp, Facebook, atau Copy Link)
+- 📱 **Desain Responsif** dan modern dengan **TailwindCSS**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fc5e00ee-481f-4538-b0c4-8cd6d4d83e90) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## ✨ Tampilan Antarmuka
 
-**Use your preferred IDE**
+- Gaya **colorful** dan **clean UI**
+- Didukung oleh **TailwindCSS** untuk komponen modern
+- Transisi dan efek halus untuk pengalaman pengguna yang menyenangkan
+- Cocok digunakan di **mobile dan desktop**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Teknologi yang Digunakan
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
+- Rectjs - TypeScript + Vite
+- TailwindCSS
 - shadcn-ui
-- Tailwind CSS
+- HTML5 Camera API (`navigator.mediaDevices.getUserMedia`)
+- `<canvas>` untuk rendering dan dekorasi
+- Share API (jika didukung browser)
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/fc5e00ee-481f-4538-b0c4-8cd6d4d83e90) and click on Share -> Publish.
+## 📦 Instalasi & Penggunaan
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+# 1. Clone repo ini
+git clone https://github.com/Ahmadsani31/webcam-photobooth.git
 
-Yes, you can!
+# 2 Navigate into the project directory
+cd web-photobooth
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# 3. install dependencies
+npm install && run build
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# 4. Start the Expo development server
+npm run dev
+
+# 5. Buka file index.html di browser
+localhost:8080/
