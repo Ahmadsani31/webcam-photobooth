@@ -1,47 +1,9 @@
 
-import { useState } from 'react';
-import PhotoCapture from '@/components/PhotoCapture';
-import PhotoEditor from '@/components/PhotoEditor';
 import { Button } from '@/components/ui/button';
 import { Camera, Sparkles, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState<'home' | 'capture' | 'edit'>('home');
-  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-
-  const handlePhotoCapture = (photoDataUrl: string) => {
-    setCapturedPhoto(photoDataUrl);
-    setCurrentStep('edit');
-  };
-
-  const handleBackToHome = () => {
-    setCurrentStep('home');
-    setCapturedPhoto(null);
-  };
-
-  const handleBackToCapture = () => {
-    setCurrentStep('capture');
-  };
-
-  if (currentStep === 'capture') {
-    return (
-      <PhotoCapture 
-        onPhotoCapture={handlePhotoCapture}
-        onBack={handleBackToHome}
-      />
-    );
-  }
-
-  if (currentStep === 'edit' && capturedPhoto) {
-    return (
-      <PhotoEditor 
-        photoUrl={capturedPhoto}
-        onBack={handleBackToCapture}
-        onHome={handleBackToHome}
-      />
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-cyan-100 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full text-center">
@@ -99,13 +61,14 @@ const Index = () => {
         </div>
 
         {/* CTA Button */}
-        <Button 
-          onClick={() => setCurrentStep('capture')}
-          className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 hover:from-pink-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold py-4 px-8 rounded-2xl text-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-        >
-          <Camera className="w-6 h-6 mr-2" />
-          Mulai Sekarang!
-        </Button>
+        <Link to="/photobooth">
+          <Button 
+            className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 hover:from-pink-600 hover:via-purple-600 hover:to-cyan-600 text-white font-bold py-4 px-8 rounded-2xl text-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            <Camera className="w-6 h-6 mr-2" />
+            Mulai Sekarang!
+          </Button>
+        </Link>
 
         {/* Decorative Elements */}
         <div className="absolute top-10 left-10 w-20 h-20 bg-yellow-200 rounded-full opacity-50 animate-pulse hidden md:block"></div>
